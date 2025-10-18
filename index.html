@@ -65,7 +65,78 @@
 
   <script>
     "use strict";
-    // Код писать здесь
+    const inputEl = document.querySelector('.add-form-name');
+    const textareaEl = document.querySelector('.add-form-text');
+    const addBtnEl = document.querySelector('.add-form-button');
+    const commentsEl = document.querySelector('.comments');
+
+    addBtnEl.addEventListener('click', () => {
+      console.log('click');
+
+      if (inputEl.value === '') {
+        inputEl.classList.add('error');
+        inputEl.placeholder = 'Нужно ввести имя!!!';
+        console.log('Error!!!');
+        return;
+      } else if (textareaEl.value === '') {
+        textareaEl.classList.add('error');
+        textareaEl.placeholder = 'Нужно ввести сообщение!!!';
+        console.log('Error!!!');
+        return;
+      }
+      console.log('Всё ОК!!!');
+      
+      const commentEl = document.createElement('li');
+      commentEl.classList.add('comment');
+      commentsEl.appendChild(commentEl);
+
+      const commentHeaderEl = document.createElement('div');
+      commentHeaderEl.classList.add('comment-header');
+      commentEl.appendChild(commentHeaderEl);
+
+      const userNameEl = document.createElement('div');
+      userNameEl.textContent = inputEl.value;
+      commentHeaderEl.appendChild(userNameEl);
+
+      const dataEl = document.createElement('div');
+      dataEl.textContent = new Date();
+      commentHeaderEl.appendChild(dataEl);
+
+      const commentBodyEl = document.createElement('div');
+      commentBodyEl.classList.add('comment-body');
+      commentEl.appendChild(commentBodyEl);
+
+      const commentTextEl = document.createElement('div');
+      commentTextEl.classList.add('comment-text');
+      commentTextEl.innerHTML = textareaEl.value;
+      commentBodyEl.appendChild(commentTextEl);
+
+      const commentFooterEl = document.createElement('div');
+      commentFooterEl.classList.add('comment-footer');
+      commentEl.appendChild(commentFooterEl);
+
+      const likesEl = document.createElement('div');
+      likesEl.classList.add('likes');
+      commentFooterEl.appendChild(likesEl);
+
+      let likesCounter = 0;
+
+      const likesCounterEl = document.createElement('span');
+      likesCounterEl.classList.add('likes-counter');
+      likesCounterEl.textContent = likesCounter;
+      likesEl.appendChild(likesCounterEl);
+
+      const likeBtnEl = document.createElement('button');
+      likeBtnEl.classList.add('like-button');
+      likesEl.appendChild(likeBtnEl);
+
+      likeBtnEl.addEventListener('click', () => {
+        likesCounterEl.innerHTML = ++likesCounter;
+      });
+
+      inputEl.value = '';
+      textareaEl.value = '';
+    });
     console.log("It works!");
   </script>
 </html>
