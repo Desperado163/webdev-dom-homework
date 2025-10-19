@@ -3,6 +3,7 @@
   <head>
     <title>Проект "Комменты"</title>
     <meta charset="utf-8" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.ico">
     <link rel="stylesheet" href="styles.css" />
   </head>
 
@@ -73,17 +74,28 @@
     addBtnEl.addEventListener('click', () => {
       console.log('click');
 
+      let validError = false;
+
       if (inputEl.value === '') {
         inputEl.classList.add('error');
         inputEl.placeholder = 'Нужно ввести имя!!!';
         console.log('Error!!!');
-        return;
-      } else if (textareaEl.value === '') {
+        validError = true;
+      } else {
+        inputEl.classList.remove('error');
+      }
+
+      if (textareaEl.value === '') {
         textareaEl.classList.add('error');
         textareaEl.placeholder = 'Нужно ввести сообщение!!!';
         console.log('Error!!!');
-        return;
+        validError = true;
+      } else {
+        textareaEl.classList.remove('error');
       }
+
+      if (validError) return;
+
       console.log('Всё ОК!!!');
       
       const commentEl = document.createElement('li');
@@ -95,11 +107,22 @@
       commentEl.appendChild(commentHeaderEl);
 
       const userNameEl = document.createElement('div');
-      userNameEl.textContent = inputEl.value;
+      userNameEl.textContent = inputEl.value.trim();
       commentHeaderEl.appendChild(userNameEl);
 
       const dataEl = document.createElement('div');
-      dataEl.textContent = new Date();
+      const d = new Date();
+      const datePart = d.toLocaleDateString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit'
+      });
+
+      const timePart = d.toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      dataEl.textContent = `${datePart} ${timePart}`;
       commentHeaderEl.appendChild(dataEl);
 
       const commentBodyEl = document.createElement('div');
@@ -108,7 +131,7 @@
 
       const commentTextEl = document.createElement('div');
       commentTextEl.classList.add('comment-text');
-      commentTextEl.innerHTML = textareaEl.value;
+      commentTextEl.innerHTML = textareaEl.value.trim();
       commentBodyEl.appendChild(commentTextEl);
 
       const commentFooterEl = document.createElement('div');
