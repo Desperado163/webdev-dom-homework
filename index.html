@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.ico">
     <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
   </head>
 
   <body>
@@ -70,13 +71,80 @@
     const textareaEl = document.querySelector('.add-form-text');
     const addBtnEl = document.querySelector('.add-form-button');
     const commentsEl = document.querySelector('.comments');
+    const now = new Date();
+    const dateString = now.toLocaleDateString('ru-RU') + ', ' + now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit'});
+
+    const commentsGroup = [
+      {
+        name: "Глеб Фокин",
+        date: new Date(),
+        text: "Это будет первый комментарий на этой странице",
+        likes: 3,
+        isLiked: false,
+      },
+      {
+        name: "Варвара Н.",
+        date: new Date(),
+        text: "Мне нравится как оформлена эта страница! ❤",
+        likes: 75,
+        isLiked: true,
+      }
+    ]
+    
+    const initClickLikes = () => {
+      const likes = document.querySelectorAll(".like-button");
+
+      for (const like of likes) {
+        like.addEventListener ("click", () => {
+          const index = like.dataset.index;
+          const comment = commentsGroup[index];
+
+          if (comment.isLiked) {
+            comment.likes--;
+            comment.isLiked = false;
+          } else {
+            comment.likes++;
+            comment.isLiked = true;
+          }
+          renderComments();
+        })
+      }
+    } 
+
+    const renderComments = () => {
+      commentsEl.innerHTML = commentsGroup.map((comment,index) => {
+        return `        
+        <li class="comment">
+          <div class="comment-header">
+            <div>${comment.name}</div>
+            <div>${dateString}</div>
+          </div>
+          <div class="comment-body">
+            <div class="comment-text">
+              ${comment.text}
+            </div>
+          </div>
+          <div class="comment-footer">
+            <div class="likes">
+              <span class="likes-counter">${comment.likes}</span>
+              <button data-index="${index}" class="like-button ${comment.isLiked ? '-active-like' : ''}"></button>
+            </div>
+          </div>
+        </li>
+        `
+      }).join("");
+
+      initClickLikes();
+    }
+
+    renderComments();
 
     addBtnEl.addEventListener('click', () => {
       console.log('click');
 
       let validError = false;
 
-      if (inputEl.value === '') {
+      if (inputEl.value.trim() === '') {
         inputEl.classList.add('error');
         inputEl.placeholder = 'Нужно ввести имя!!!';
         console.log('Error!!!');
@@ -85,7 +153,7 @@
         inputEl.classList.remove('error');
       }
 
-      if (textareaEl.value === '') {
+      if (textareaEl.value.trim() === '') {
         textareaEl.classList.add('error');
         textareaEl.placeholder = 'Нужно ввести сообщение!!!';
         console.log('Error!!!');
@@ -97,69 +165,82 @@
       if (validError) return;
 
       console.log('Всё ОК!!!');
+
+      commentsGroup.push(
+        {
+          name: inputEl.value,
+          date: dateString,
+          text: textareaEl.value,
+          likes: 0,
+          isLiked: false,
+        }
+      )
+
+      renderComments();
       
-      const commentEl = document.createElement('li');
-      commentEl.classList.add('comment');
-      commentsEl.appendChild(commentEl);
+      // const commentEl = document.createElement('li');
+      // commentEl.classList.add('comment');
+      // commentsEl.appendChild(commentEl);
 
-      const commentHeaderEl = document.createElement('div');
-      commentHeaderEl.classList.add('comment-header');
-      commentEl.appendChild(commentHeaderEl);
+      // const commentHeaderEl = document.createElement('div');
+      // commentHeaderEl.classList.add('comment-header');
+      // commentEl.appendChild(commentHeaderEl);
 
-      const userNameEl = document.createElement('div');
-      userNameEl.textContent = inputEl.value.trim();
-      commentHeaderEl.appendChild(userNameEl);
+      // const userNameEl = document.createElement('div');
+      // userNameEl.textContent = inputEl.value.trim();
+      // commentHeaderEl.appendChild(userNameEl);
 
-      const dataEl = document.createElement('div');
-      const d = new Date();
-      const datePart = d.toLocaleDateString('ru-RU', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit'
-      });
+      // const dataEl = document.createElement('div');
+      // const d = new Date();
+      // const datePart = d.toLocaleDateString('ru-RU', {
+      //   day: '2-digit',
+      //   month: '2-digit',
+      //   year: '2-digit'
+      // });
 
-      const timePart = d.toLocaleTimeString('ru-RU', {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-      dataEl.textContent = `${datePart} ${timePart}`;
-      commentHeaderEl.appendChild(dataEl);
+      // const timePart = d.toLocaleTimeString('ru-RU', {
+      //   hour: '2-digit',
+      //   minute: '2-digit'
+      // });
+      // dataEl.textContent = `${datePart} ${timePart}`;
+      // commentHeaderEl.appendChild(dataEl);
 
-      const commentBodyEl = document.createElement('div');
-      commentBodyEl.classList.add('comment-body');
-      commentEl.appendChild(commentBodyEl);
+      // const commentBodyEl = document.createElement('div');
+      // commentBodyEl.classList.add('comment-body');
+      // commentEl.appendChild(commentBodyEl);
 
-      const commentTextEl = document.createElement('div');
-      commentTextEl.classList.add('comment-text');
-      commentTextEl.innerHTML = textareaEl.value.trim();
-      commentBodyEl.appendChild(commentTextEl);
+      // const commentTextEl = document.createElement('div');
+      // commentTextEl.classList.add('comment-text');
+      // commentTextEl.innerHTML = textareaEl.value.trim();
+      // commentBodyEl.appendChild(commentTextEl);
 
-      const commentFooterEl = document.createElement('div');
-      commentFooterEl.classList.add('comment-footer');
-      commentEl.appendChild(commentFooterEl);
+      // const commentFooterEl = document.createElement('div');
+      // commentFooterEl.classList.add('comment-footer');
+      // commentEl.appendChild(commentFooterEl);
 
-      const likesEl = document.createElement('div');
-      likesEl.classList.add('likes');
-      commentFooterEl.appendChild(likesEl);
+      // const likesEl = document.createElement('div');
+      // likesEl.classList.add('likes');
+      // commentFooterEl.appendChild(likesEl);
 
-      let likesCounter = 0;
+      // let likesCounter = 0;
 
-      const likesCounterEl = document.createElement('span');
-      likesCounterEl.classList.add('likes-counter');
-      likesCounterEl.textContent = likesCounter;
-      likesEl.appendChild(likesCounterEl);
+      // const likesCounterEl = document.createElement('span');
+      // likesCounterEl.classList.add('likes-counter');
+      // likesCounterEl.textContent = likesCounter;
+      // likesEl.appendChild(likesCounterEl);
 
-      const likeBtnEl = document.createElement('button');
-      likeBtnEl.classList.add('like-button');
-      likesEl.appendChild(likeBtnEl);
+      // const likeBtnEl = document.createElement('button');
+      // likeBtnEl.classList.add('like-button');
+      // likesEl.appendChild(likeBtnEl);
 
-      likeBtnEl.addEventListener('click', () => {
-        likesCounterEl.innerHTML = ++likesCounter;
-      });
+      // likeBtnEl.addEventListener('click', () => {
+      //   likesCounterEl.innerHTML = ++likesCounter;
+      // });
 
-      inputEl.value = '';
-      textareaEl.value = '';
+      inputEl.value = "";
+      textareaEl.value = "";
     });
     console.log("It works!");
+
   </script>
 </html>
