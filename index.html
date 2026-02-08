@@ -168,9 +168,9 @@
 
       commentsGroup.push(
         {
-          name: inputEl.value,
+          name: inputEl.value.replaceAll("<", "&quot").replaceAll(">", "&quot"),
           date: dateString,
-          text: textareaEl.value,
+          text: textareaEl.value.replaceAll("<", "&quot").replaceAll(">", "&quot"),
           likes: 0,
           isLiked: false,
         }
